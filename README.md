@@ -1,40 +1,93 @@
-### Documentation is included in the Documentation folder ###
+# PlattsConnect Price Scraper - UiPath RPA
 
-[REFrameWork Documentation](https://github.com/UiPath/ReFrameWork/blob/master/Documentation/REFramework%20documentation.pdf)
+This RPA project automates the process of scraping **commodity pricing data** from the **PlattsConnect** website. It filters the data according to defined rules and exports the result as a CSV file to a **shared folder**.
 
-### REFrameWork Template ###
-**Robotic Enterprise Framework**
+The process is built using **UiPath REFramework** to ensure reliability, logging, and modularity.
 
-* Built on top of *Transactional Business Process* template
-* Uses *State Machine* layout for the phases of automation project
-* Offers high level logging, exception handling and recovery
-* Keeps external settings in *Config.xlsx* file and Orchestrator assets
-* Pulls credentials from Orchestrator assets and *Windows Credential Manager*
-* Gets transaction data from Orchestrator queue and updates back status
-* Takes screenshots in case of system exceptions
+---
 
+## Project Description
 
-### How It Works ###
+The automation accesses the PlattsConnect website, performs user login (if needed), navigates to the pricing data section, scrapes relevant data, applies filtering rules (e.g., by product or region), and exports the cleaned dataset to a shared directory in CSV format.
 
-1. **INITIALIZE PROCESS**
- + ./Framework/*InitiAllSettings* - Load configuration data from Config.xlsx file and from assets
- + ./Framework/*GetAppCredential* - Retrieve credentials from Orchestrator assets or local Windows Credential Manager
- + ./Framework/*InitiAllApplications* - Open and login to applications used throughout the process
+A success email is optionally sent after the process completes.
 
-2. **GET TRANSACTION DATA**
- + ./Framework/*GetTransactionData* - Fetches transactions from an Orchestrator queue defined by Config("OrchestratorQueueName") or any other configured data source
+---
 
-3. **PROCESS TRANSACTION**
- + *Process* - Process trasaction and invoke other workflows related to the process being automated 
- + ./Framework/*SetTransactionStatus* - Updates the status of the processed transaction (Orchestrator transactions by default): Success, Business Rule Exception or System Exception
+## Key Features
 
-4. **END PROCESS**
- + ./Framework/*CloseAllApplications* - Logs out and closes applications used throughout the process
+- Automated login and data scraping from PlattsConnect
+- Filtering of pricing data based on business rules
+- CSV export to shared folder
+- Email notification on successful completion
+- REFramework-based for robust error handling and modularity
 
+---
 
-### For New Project ###
+## Project Structure
 
-1. Check the Config.xlsx file and add/customize any required fields and values
-2. Implement InitiAllApplications.xaml and CloseAllApplicatoins.xaml workflows, linking them in the Config.xlsx fields
-3. Implement GetTransactionData.xaml and SetTransactionStatus.xaml according to the transaction type being used (Orchestrator queues by default)
-4. Implement Process.xaml workflow and invoke other workflows related to the process being automated
+| Folder/File               | Description                                                  |
+|---------------------------|--------------------------------------------------------------|
+| Main.xaml                 | Main entry point of the automation                          |
+| Modular/EmailSuccess.xaml | Sends notification email after successful export            |
+| Framework/                | Standard REFramework components                            |
+| Data/Config.xlsx          | Stores URLs, credentials, filter parameters, paths, etc.    |
+| project.json              | Project metadata and dependencies                           |
+| README.md                 | Project documentation                                        |
+
+---
+
+## Process Workflow
+
+1. **Initialization**  
+   - Loads settings from `Config.xlsx`  
+   - Initializes logs and variables
+
+2. **Access & Scraping**  
+   - Navigates to PlattsConnect website  
+   - Logs in if needed  
+   - Extracts pricing data from a specific section
+
+3. **Filtering**  
+   - Applies filtering logic (e.g., by commodity type, currency, location)  
+   - Validates that relevant rows are found
+
+4. **Export to CSV**  
+   - Saves filtered results to a predefined **shared folder** as `.csv`
+
+5. **Notification**  
+   - Sends success email using `EmailSuccess.xaml` (optional/configurable)
+
+---
+
+## How to Run
+
+> Designed for scheduled runs via **UiPath Orchestrator**, but also testable manually.
+
+1. Open project in **UiPath Studio**
+2. Update values in `Data/Config.xlsx`:
+   - PlattsConnect URL and credentials (if needed)
+   - Filtering parameters
+   - Shared folder path
+   - Email configuration (if used)
+3. Run `Main.xaml`
+4. Check shared folder for CSV output
+
+---
+
+## Requirements
+
+- UiPath Studio 2022.10+
+- Chrome/Edge browser with UiPath extension
+- Access to PlattsConnect account and target data
+- Network access to the shared folder
+- Email SMTP/Outlook setup (for optional success email)
+
+---
+
+## Contact
+
+For inquiries or collaboration:
+
+- **Email:** fadillah650@gmail.com  
+- **LinkedIn:** [Enrico Naufal Fadilla](https://linkedin.com/in/enrico-naufal-fadilla-54338a256)
